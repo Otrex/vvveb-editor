@@ -21,22 +21,6 @@ require "barrel.php";
 
 define('MAX_FILE_LIMIT', 1024 * 1024 * 2);//2 Megabytes max html file size
 
-
-function _echo($str) {
-	echo $str;
-}
-
-function sanitizeFileName($file, $allowedExtension = 'html') {
-	//sanitize, remove double dot .. and remove get parameters if any
-	$file = __DIR__ . '/' . preg_replace('@\?.*$@' , '', preg_replace('@\.{2,}@' , '', preg_replace('@[^\/\\a-zA-Z0-9\-\._]@', '', $file)));
-	
-	//allow only .html extension
-	if ($allowedExtension) {
-		$file = preg_replace('/\.[^.]+$/', '', $file) . ".$allowedExtension";
-	}
-	return $file;
-}
-
 function showError($error) {
 	header($_SERVER['SERVER_PROTOCOL'] . ' 500 Internal Server Error', true, 500);
 	die($error);
