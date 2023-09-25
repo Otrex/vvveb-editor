@@ -158,8 +158,10 @@ if (!$file) {
 
 $dir = dirname($file);
 
-if (!is_dir($dir) && mkdir($dir, 0777, true)) {
-	echo "$dir folder was created\n";
+if (!is_dir($dir)) {
+	if (mkdir($dir, 0777, true)) {
+		echo "$dir folder was created\n";
+	}
 } else {
 	showError("Error creating folder '$dir'\n");
 }
