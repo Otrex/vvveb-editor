@@ -124,7 +124,7 @@ $actionHandler = [
 				if (mkdir($dir, 0777, true)) {
 					echo "$dir folder was created\n";
 				} else {
-					showError("Error creating folder '$dir'\n");
+					showError("Error creating folder from reuse '$dir'\n");
 				}				
 			}
 			
