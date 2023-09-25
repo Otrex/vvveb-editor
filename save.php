@@ -16,8 +16,15 @@ limitations under the License.
 
 https://github.com/givanz/VvvebJs
 */
+require "barrel.php";
+
 
 define('MAX_FILE_LIMIT', 1024 * 1024 * 2);//2 Megabytes max html file size
+
+
+function _echo($str) {
+	echo $str;
+}
 
 function sanitizeFileName($file, $allowedExtension = 'html') {
 	//sanitize, remove double dot .. and remove get parameters if any
@@ -38,6 +45,7 @@ function showError($error) {
 $html   = '';
 $file   = '';
 $action = '';
+$_site = file_get_contents("example.site");
 
 if (isset($_POST['startTemplateUrl']) && !empty($_POST['startTemplateUrl'])) {
 	$startTemplateUrl = sanitizeFileName($_POST['startTemplateUrl']);
@@ -54,63 +62,78 @@ if (isset($_GET['action'])) {
 	$action = $_GET['action'];
 }
 
-if ($action) {
-	//file manager actions, delete and rename
-	switch ($action) {
-		case 'rename':
-			$newfile = sanitizeFileName($_POST['newfile'], false);
-			if ($file && $newfile) {
-				if (rename($file, $newfile)) {
-					echo "File '$file' renamed to '$newfile'";
-				} else {
-					showError("Error renaming file '$file' renamed to '$newfile'");
+
+$actionHandler = [
+	'rename' => function () {
+		global $file, $_site;
+		$duplicate = strToBool($_POST['duplicate']);
+		$newfile = sanitizeFileName($_POST['newfile'], false);
+
+		if (!$newfile) {
+			showError('New Filename is empty!');
+			exit;
+		}
+		
+		if (!$file) {
+			showError('Filename is empty!');
+			exit;
+		} 
+
+		if ($duplicate) {
+			$new_dir = dirname($newfile);
+			$old_dir = dirname($file);
+			$excluded = [
+				'.', '..',
+				pathinfo($file)['filename']
+			];
+
+			if (!is_dir($new_dir)){
+				mkdir($new_dir, 0777, true);
+				foreach (scandir($old_dir) as $f) {
+					$has_excluded = array_search($f, $excluded);
+					if ($has_excluded !== false) {
+						continue; // Ignore hidden files
+					} 
+					if (!copy($old_dir.'/'.$f, $new_dir.'/'.$f)) {
+						showError("Error when copying file '$file'");
+						exit;
+					};
 				}
 			}
-		break;
-		case 'delete':
-			if ($file) {
-				if (unlink($file)) {
-					echo "File '$file' deleted";
-				} else {
-					showError("Error deleting file '$file'");
-				}
-			}
-		break;
-		case 'saveReusable':
-		    //block or section
-			$type = $_POST['type'] ?? false;
-			$name = $_POST['name'] ?? false;
-			$html = $_POST['html'] ?? false;
-			
-			if ($type && $name && $html) {
-				
-				$file = sanitizeFileName("$type/$name");
-				$dir = dirname($file);
-				if (!is_dir($dir)) {
-					echo "$dir folder does not exist\n";
-					if (mkdir($dir, 0777, true)) {
-						echo "$dir folder was created\n";
-					} else {
-						showError("Error creating folder '$dir'\n");
-					}				
-				}
-				
-				if (file_put_contents($file, $html)) {
-					echo "File saved '$file'";
-				} else {
-					showError("Error saving file '$file'\nPossible causes are missing write permission or incorrect file path!");
-				}
+
+			if (copy($file, $newfile)) {
+				echo "File '$file' copied to '$newfile'";
 			} else {
-				showError("Missing reusable element data!\n");
+				showError("Error copied file '$file' renamed to '$newfile'");
 			}
-		break;
-		default:
-			showError("Invalid action '$action'!");
-	}
-} else {
-	//save page
-	if ($html) {
+
+		} else {
+			if (rename($file, $newfile)) {
+				echo "File '$file' renamed to '$newfile'";
+			} else {
+				showError("Error renaming file '$file' renamed to '$newfile'");
+			}
+		}
+	},
+	'delete' => function () {
+		global $file;
 		if ($file) {
+			if (unlink($file)) {
+				echo "File '$file' deleted";
+			} else {
+				showError("Error deleting file '$file'");
+			}
+		}
+	},
+	'saveReusable' => function () {
+		global $file;
+		$type = $_POST['type'] ?? false;
+		$name = $_POST['name'] ?? false;
+		$html = $_POST['html'] ?? false;
+		
+		if ($type && $name && $html) {
+			
+			$file = sanitizeFileName("$type/$name");
 			$dir = dirname($file);
 			if (!is_dir($dir)) {
 				echo "$dir folder does not exist\n";
@@ -118,18 +141,48 @@ if ($action) {
 					echo "$dir folder was created\n";
 				} else {
 					showError("Error creating folder '$dir'\n");
-				}
+				}				
 			}
-
+			
 			if (file_put_contents($file, $html)) {
 				echo "File saved '$file'";
 			} else {
 				showError("Error saving file '$file'\nPossible causes are missing write permission or incorrect file path!");
-			}	
+			}
 		} else {
-			showError('Filename is empty!');
+			showError("Missing reusable element data!\n");
 		}
-	} else {
-		showError('Html content is empty!');
 	}
+];
+
+if ($action) {
+	$actionHandler[$action] 
+		? $actionHandler[$action]() 
+		: showError("Invalid action '$action'!");
+	exit;
 }
+
+if (!$html) {
+	showError('Html content is empty!');
+	exit;
+}
+
+if (!$file) {
+	showError('Filename is empty!');
+	exit;
+} 
+
+$dir = dirname($file);
+
+if (!is_dir($dir) && mkdir($dir, 0777, true)) {
+	echo "$dir folder was created\n";
+} else {
+	showError("Error creating folder '$dir'\n");
+	exit;
+}
+
+if (file_put_contents($file, $html)) {
+	echo "File saved '$file'";
+} else {
+	showError("Error saving file '$file'\nPossible causes are missing write permission or incorrect file path!");
+}	
