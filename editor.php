@@ -1,6 +1,6 @@
 <?php
 
-$site = $GET['site'] ?? 'site-test';
+$site = $GET['site'] ?? 'test';
 //include 'editor.html';
 $html = file_get_contents('editor.html');
 
