@@ -162,7 +162,6 @@ if (!is_dir($dir) && mkdir($dir, 0777, true)) {
 	echo "$dir folder was created\n";
 } else {
 	showError("Error creating folder '$dir'\n");
-	exit;
 }
 
 if (file_put_contents($file, $html)) {
