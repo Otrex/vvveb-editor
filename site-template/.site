@@ -1,4 +1,4 @@
 RewriteEngine On
 RewriteCond %{REQUEST_URI} !^/site-test/
-RewriteCond %{HTTP_HOST} ^site.otrex.space$ [NC]
+RewriteCond %{HTTP_HOST} ^mmm.otrex.space$ [NC]
 RewriteRule ^(.*)$ /site-test/$1 [L]
