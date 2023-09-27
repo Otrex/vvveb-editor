@@ -21,6 +21,18 @@ https://github.com/givanz/VvvebJs
 This script is used by image upload input to save the image on the server and return the image url to be set as image src attribute.
 */ 
 
+// require "barrel.php";
+
+// $only_file_name = strToBool(resolveIsset($_POST, 'onlyFilename'));
+// $media_path = sanitizeFileNameV2(resolveIsset($_POST, 'mediaPath'), false);
+
+// $file = $request->file('file');
+
+// if (!$file) return showErrorV2('File not found');
+
+// $folder_path = implode('/', $media_path ? [$media_path] : []);
+// $upload = $s3->upload_file($folder_path, $file);
+
 $uploadDenyExtensions  = ['php'];
 $uploadAllowExtensions = ['ico','jpg','jpeg','png','gif','webp'];
 

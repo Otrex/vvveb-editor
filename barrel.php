@@ -22,6 +22,17 @@ function strToBool($str) {
   return false;
 }
 
+function sanitizeFileNameV2($file, $allowedExtension = 'html') {
+	//sanitize, remove double dot .. and remove get parameters if any
+	$file = preg_replace('@\?.*$@' , '', preg_replace('@\.{2,}@' , '', preg_replace('@[^\/\\a-zA-Z0-9\-\._]@', '', $file)));
+	
+	//allow only .html extension
+	if ($allowedExtension) {
+		$file = preg_replace('/\.[^.]+$/', '', $file) . ".$allowedExtension";
+	}
+	return $file;
+}
+
 function sanitizeFileName($file, $allowedExtension = 'html') {
 	//sanitize, remove double dot .. and remove get parameters if any
 	$file = __DIR__ . '/' . preg_replace('@\?.*$@' , '', preg_replace('@\.{2,}@' , '', preg_replace('@[^\/\\a-zA-Z0-9\-\._]@', '', $file)));

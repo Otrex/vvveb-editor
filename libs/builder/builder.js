@@ -2232,7 +2232,11 @@ Vvveb.Gui = {
 
 			data['title']  = data['file'].replace('/', '').replace('.html', '');
 			var name = data['name'] = data['folder'].replace('/', '_') + "-" + data['title'];
-			data['url']  = data['file'] = data['folder'] + "/" + data['file'];
+			var actualFolder = data['folder'];
+			data['folder'] = data['folder'] === "/" ? window.SITE: window.SITE + '/' + data['folder'];
+			data['url'] = data['file'] = data['folder'] + "/" + data['file'];
+			data['folder'] = data['folderTitle'] = actualFolder === "/" ? "": actualFolder;
+			console.log(data);
 			
 			Vvveb.FileManager.addPage(data.name, data);
 			e.preventDefault();
@@ -3065,11 +3069,16 @@ Vvveb.FileManager = {
 			folder = folder.find("> ol");
 		} 
 		
-		folder.append(
+		folder.prepend(
 			tmpl("vvveb-filemanager-page", data));
 	},
 	
 	addPages: function(pages) {
+		pages_x = pages.filter((page) => page.folder === "");
+		pages_y = pages.filter((page) => page.folder);
+
+		pages = [...pages_y, ...pages_x];
+
 		for (page in pages) {
 			this.addPage(pages[page]['name'], pages[page]);
 		}

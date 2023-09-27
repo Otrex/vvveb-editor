@@ -1758,7 +1758,14 @@ let pages =
 	
 $(function() {
 
-	let firstPage = Object.keys(pages)[0];
+	let pages = (pages);
+	if (!pages) {
+		pages = [];
+	}
+
+	let firstPage = Object.keys(pages).at(-1);
+
+	console.log(pages[firstPage]);
 	Vvveb.Builder.init(pages[firstPage]["url"], function() {
 		//load code after page is loaded here
 	});
