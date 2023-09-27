@@ -5,7 +5,11 @@ $site = $GET['site'] ?? 'test';
 $html = file_get_contents('editor.html');
 
 //search for html files in demo and my-pages folders
-$htmlFiles = glob('{site-'.$site.'/*.html,site-'.$site.'/*\/*.html,demo/*\/*.html, demo/*.html}',  GLOB_BRACE);
+$htmlFiles = glob('{site-'.$site.'/*.html,site-'.$site.'/*\/*.html'.
+  ($site == "template" || $site == "test" 
+    ? ',demo/*\/*.html, demo/*.html': '').'}',  GLOB_BRACE);
+
+    
 $files = '';
 foreach ($htmlFiles as $file) { 
    if (in_array($file, array('new-page-blank-template.html', 'editor.html'))) continue;//skip template files
