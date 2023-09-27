@@ -78,7 +78,9 @@ $actionHandler = [
 					if ($has_excluded !== false) {
 						continue; // Ignore hidden files
 					} 
-					if (!copy($old_dir.'/'.$f, $new_dir.'/'.$f)) {
+
+					$has_copied = copy($old_dir.'/'.$f, $new_dir.'/'.$f);
+					if (!$has_copied) {
 						showError("Error when copying file '$file'");
 						exit;
 					};
