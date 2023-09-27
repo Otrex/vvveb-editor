@@ -21,62 +21,76 @@ https://github.com/givanz/VvvebJs
 This script is used by image upload input to save the image on the server and return the image url to be set as image src attribute.
 */ 
 
-// require "barrel.php";
+require "barrel.php";
+require "src/S3Repo.php";
 
-// $only_file_name = strToBool(resolveIsset($_POST, 'onlyFilename'));
-// $media_path = sanitizeFileNameV2(resolveIsset($_POST, 'mediaPath'), false);
+$s3 = S3Repository::instance();
 
-// $file = $request->file('file');
+$only_file_name = strToBool(resolveIsset($_POST, 'onlyFilename'));
+$media_path = sanitizeFileNameV2(resolveIsset($_POST, 'mediaPath'), false);
 
-// if (!$file) return showErrorV2('File not found');
+$file = $_FILES['file'];
 
-// $folder_path = implode('/', $media_path ? [$media_path] : []);
-// $upload = $s3->upload_file($folder_path, $file);
+// clog($media_path); die;
 
-$uploadDenyExtensions  = ['php'];
-$uploadAllowExtensions = ['ico','jpg','jpeg','png','gif','webp'];
-
-function showError($error) {
-	header($_SERVER['SERVER_PROTOCOL'] . ' 500 Internal Server Error', true, 500);
-	die($error);
+if (!$file) {
+	showErrorV2('File not found');
 }
 
-function sanitizeFileName($file)
-{
-	//sanitize, remove double dot .. and remove get parameters if any
-	$file = preg_replace('@\?.*$@' , '', preg_replace('@\.{2,}@' , '', preg_replace('@[^\/\\a-zA-Z0-9\-\._]@', '', $file)));
-	return $file;
-}
+$folder_path = implode('/', $media_path ? [$media_path] : []);
 
+$upload = $s3->upload_file($folder_path, $file);
 
-define('UPLOAD_FOLDER', __DIR__ . '/');
-if (isset($_POST['mediaPath'])) {
-	define('UPLOAD_PATH', sanitizeFileName($_POST['mediaPath']) .'/');
+if ($only_file_name) {
+	echo $upload["name"];
 } else {
-	define('UPLOAD_PATH', '/');
+	echo $upload["path"];
 }
 
-$fileName  = $_FILES['file']['name'];
-$extension = strtolower(substr($fileName, strrpos($fileName, '.') + 1));
+// $uploadDenyExtensions  = ['php'];
+// $uploadAllowExtensions = ['ico','jpg','jpeg','png','gif','webp'];
 
-//check if extension is on deny list
-if (in_array($extension, $uploadDenyExtensions)) {
-	showError("File type $extension not allowed!");
-}
+// function showError($error) {
+// 	header($_SERVER['SERVER_PROTOCOL'] . ' 500 Internal Server Error', true, 500);
+// 	die($error);
+// }
 
-/*
-//comment deny code above and uncomment this code to change to a more restrictive allowed list
-// check if extension is on allow list
-if (!in_array($extension, $uploadAllowExtensions)) {
-	showError("File type $extension not allowed!");
-}
-*/
+// function sanitizeFileName($file)
+// {
+// 	//sanitize, remove double dot .. and remove get parameters if any
+// 	$file = preg_replace('@\?.*$@' , '', preg_replace('@\.{2,}@' , '', preg_replace('@[^\/\\a-zA-Z0-9\-\._]@', '', $file)));
+// 	return $file;
+// }
 
-$destination = UPLOAD_FOLDER . UPLOAD_PATH . '/' . $fileName;
-move_uploaded_file($_FILES['file']['tmp_name'], $destination);
 
-if (isset($_POST['onlyFilename'])) {
-	echo $fileName;
-} else {
-	echo UPLOAD_PATH . $fileName;
-}
+// define('UPLOAD_FOLDER', __DIR__ . '/');
+// if (isset($_POST['mediaPath'])) {
+// 	define('UPLOAD_PATH', sanitizeFileName($_POST['mediaPath']) .'/');
+// } else {
+// 	define('UPLOAD_PATH', '/');
+// }
+
+// $fileName  = $_FILES['file']['name'];
+// $extension = strtolower(substr($fileName, strrpos($fileName, '.') + 1));
+
+// //check if extension is on deny list
+// if (in_array($extension, $uploadDenyExtensions)) {
+// 	showError("File type $extension not allowed!");
+// }
+
+// /*
+// //comment deny code above and uncomment this code to change to a more restrictive allowed list
+// // check if extension is on allow list
+// if (!in_array($extension, $uploadAllowExtensions)) {
+// 	showError("File type $extension not allowed!");
+// }
+// */
+
+// $destination = UPLOAD_FOLDER . UPLOAD_PATH . '/' . $fileName;
+// move_uploaded_file($_FILES['file']['tmp_name'], $destination);
+
+// if (isset($_POST['onlyFilename'])) {
+// 	echo $fileName;
+// } else {
+// 	echo UPLOAD_PATH . $fileName;
+// }

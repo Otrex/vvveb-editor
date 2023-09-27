@@ -19,13 +19,32 @@ https://github.com/givanz/VvvebJs
 
 //scan media folder for all files to display in media modal
 
+require "barrel.php";
+
+require "src/S3Repo.php";
+
+$s3 = S3Repository::instance();
+
 if (isset($_POST['mediaPath'])) {
 	define('UPLOAD_PATH', $_POST['mediaPath']);
 } else {
-	define('UPLOAD_PATH', 'media');
+	define('UPLOAD_PATH', $_GET['gallery']);
 }
 
-$scandir = __DIR__ . '/' . UPLOAD_PATH;
+
+$s3_media = $s3->list_files(UPLOAD_PATH);
+
+$s3_media = array_map(function ($media) {
+	$pathInfo = pathinfo($media['path']);
+	return [
+		'type' => 'file',
+		'path' => $media['path'],
+		'size' => intval($media['size']),
+		'name' => $pathInfo['filename'].'.'.$pathInfo['extension']
+	];
+}, $s3_media);
+
+$scandir = __DIR__ . '/' . 'media';
 
 // Run the recursive function
 // This function scans the files folder recursively, and builds a large array
@@ -37,8 +56,9 @@ $scan = function ($dir) use ($scandir, &$scan) {
 
 	if (file_exists($dir)) {
 		foreach (scandir($dir) as $f) {
-			if (! $f || $f[0] == '.') {
-				continue; // Ignore hidden files
+			if (! $f || $f[0] == '.' || substr($f, -5) === ".html") {
+				continue; 
+				// Ignore hidden files
 			}
 
 			if (is_dir($dir . '/' . $f)) {
@@ -66,7 +86,7 @@ $scan = function ($dir) use ($scandir, &$scan) {
 	return $files;
 };
 
-$response = $scan($scandir);
+$response = array_merge(UPLOAD_PATH == 'site-template' ? $scan($scandir): [], $s3_media);
 
 // Output the directory listing as JSON
 

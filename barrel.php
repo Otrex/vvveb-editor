@@ -1,4 +1,13 @@
 <?php
+require 'vendor/autoload.php';
+define('S3_BASE_PATH', "editor");
+
+use Dotenv\Dotenv;
+
+(function() {
+  //ts-ignore: true
+  Dotenv::createUnsafeImmutable(__DIR__ . '/')->load();
+})();
 
 function resolveIsset(array $arr, string $key) {
   return isset($arr[$key]) && !empty($arr[$key]) ? $arr[$key] : null;

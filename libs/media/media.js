@@ -4,7 +4,7 @@ function ucFirst(str) {
   return str[0].toUpperCase() + str.slice(1);
 }
 
-let mediaScanUrl = 'scan.php';
+let mediaScanUrl = 'scan.php?gallery='+ window.SITE;
 
 class MediaModal {
 	constructor (modal = true)
@@ -465,8 +465,8 @@ _
 					
 					var formData = new FormData();
 					formData.append("file", file);
-					formData.append("mediaPath", Vvveb.MediaModal.mediaPath + Vvveb.MediaModal.currentPath);
-					formData.append("onlyFilename", true);
+					formData.append("mediaPath", window.SITE);
+					// formData.append("onlyFilename", true);
 		
 					$.ajax({
 						type: "POST",
@@ -479,8 +479,9 @@ _
 							let fileElement = Vvveb.MediaModal.addFile({
 								name:data,
 								type:"file",
-								path: Vvveb.MediaModal.currentPath + "/" + data,
-								size:1
+								path: data,
+								// path: Vvveb.MediaModal.currentPath + "/" + data,
+								size:file.size
 							},true);
 							
 							 $([document.documentElement, document.body]).animate({
@@ -575,7 +576,7 @@ _
 					if (fileType == "jpg" || fileType == "jpeg" || fileType == "png" || fileType == "gif" || fileType == "svg" || fileType == "webp") {
 						
 						//icon = '<div class="image" style="background-image: url(' + _this.mediaPath + f.path + ');"></div>';
-						icon = '<img class="image" loading="lazy" src="' + _this.mediaPath + f.path + '">';
+						icon = '<img class="image" loading="lazy" src="' + (f.path.indexOf('http') === 0 ? f.path:  _this.mediaPath + f.path)+ '">';
 						isImage = true;
 					} else {
 						icon = '<span class="icon file f-'+fileType+'">.'+fileType+'</span>';
@@ -586,7 +587,7 @@ _
 				
 				actions += '<a href="javascript:void(0);" title="Rename" class="btn btn-outline-primary btn-sm border-0 btn-rename"><i class="la la-edit"></i></a> <a href="javascript:void(0);" title="Delete" class="btn btn-outline-danger btn-sm border-0 btn-delete"><i class="la la-trash"></i></a>';
 
-				let userActions = $(window).triggerHandler( "mediaModal:fileActions", { file: _this.mediaPath + f.path, name, fileType, fileSize, isImage, fileType, actions} );
+				let userActions = $(window).triggerHandler( "mediaModal:fileActions", { file: (f.path.indexOf('http') === 0 ? f.path:  _this.mediaPath + f.path), name, fileType, fileSize, isImage, fileType, actions} );
 
 				if (userActions) actions = userActions;
 				if (isImage) actions += '<a href="javascript:void(0);" class="preview-link p-2"><i class="la la-search-plus"></i></a>';
@@ -594,12 +595,12 @@ _
 				
 				var file = $('<li class="files">\
 						<label class="form-check">\
-						<input type="hidden" value="' +  _this.mediaPath + f.path + '" name="filename[]">\
+						<input type="hidden" value="' + (f.path.indexOf('http') === 0 ? f.path:  _this.mediaPath + f.path) + '" name="filename[]">\
 						  <input type="' + ((_this.type == "single") ? "radio" : "checkbox") + '" class="form-check-input" value="' + f.path + '" name="file[]" ' + ((selected == "single") ? "checked" : "") + '><span class="form-check-label"></span>\
 						  <div href="#\" class="files">'+icon+'<div class="info"><div class="name">'+ name +'</div><span class="details">'+fileSize+'</span>\
 							' + actions + '\
 							 <div class="preview">\
-								<img src="' + _this.mediaPath + f.path + '">\
+								<img src="' + (f.path.indexOf('http') === 0 ? f.path :  _this.mediaPath + f.path) + '">\
 								<div>\
 									<span class="name">'+ name +'</span><span class="details">'+fileSize+'</span>\
 								</div>\
