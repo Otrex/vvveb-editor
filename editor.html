@@ -15,10 +15,45 @@
 		<script type="text/javascript"> 
 		window.SITE="";
 		</script>
+		<style> 
+
+		 body, .btn-primary, #vvveb-builder #elements-tabs a.active {
+			--bs-link-color: var(--accent-light) !important;
+			--bs-btn-border-color: var(--accent) !important;
+			--bs-btn-bg: var(--accent) !important;
+			--bs-link-hover-color: #8bb9fe;
+    	--bs-link-color-rgb: 214,51,132;
+			--bs-primary: var(--accent) !important;
+			--bs-btn-border-color: var(--accent) !important;
+		 }
+
+		 #vvveb-builder #right-panel .nav-link.active, #vvveb-builder .nav-tabs .nav-link.active {
+			--bs-link-color-rgb: 214,51,132;
+		 }
+
+		 .tree > ol li:hover {
+			color: var(--accent) !important;
+		 }
+			:root {
+				--accent-lighter-rgb: 214,51,132;
+				--accent-lighter: #ea72b8;
+				--accent-light: #e943a4;
+				--accent: #dd2590;
+			}
+/* 
+			.component-properties a.nav-link {
+				color: var(--accent-lighter) !important;
+			}
+			label.header, a.active, .sections-tab a.active, button.btn-outline-primary, a.btn-outline-primary, [role="tablist"] a.nav-link.active {
+				/* color: var(--accent-light) !important; 
+				--bs-link-color: var(--accent-light) !important;
+				--bs-link-color-rgb: var(--accent-lighter-rgb);
+			} */
+		</style>
   </head>
 <body>
 
-	<div id="vvveb-builder">
+	<div id="vvveb-builder" class="reset">
 				<div id="top-panel">
 					<!-- <img src="img/logo.png" alt="Vvveb" class="float-start" id="logo"> -->
 					
@@ -66,9 +101,9 @@
 
 					</div>
 					
-								
-					<div class="btn-group me-3 float-end" role="group">
-					  <button class="btn btn-primary btn-icon" title="Export (Ctrl + E)" id="save-btn" data-vvveb-action="saveAjax" data-vvveb-url="save.php" data-v-vvveb-shortcut="ctrl+e">
+					
+					<div class="btn-group me-3 float-end" role="group" >
+					  <button class="btn btn-primary btn-icon" style="--bs-blue: var(--accent)" title="Export (Ctrl + E)" id="save-btn" data-vvveb-action="saveAjax" data-vvveb-url="save.php" data-v-vvveb-shortcut="ctrl+e">
 
 						<span class="loading d-none">
 						<i class="la la-save"></i>
