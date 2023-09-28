@@ -1,5 +1,5 @@
 {
-    "name": "otrex/webeditor",
+    "name": "tronweb/webeditor",
     "autoload": {
         "psr-4": {
             "Otrex\\Webeditor\\": "src/"

@@ -3,8 +3,6 @@
 use Aws\S3\S3Client;
 use Aws\Exception\AwsException;
 
-
-
 class S3Repository {
   private $__s3_client = null;
   private $__s3_bucket = null;
