@@ -102,11 +102,6 @@ class S3Repository {
 
   public function delete_file(string $path) {
     try {
-      // $result = $this->__s3_client->deleteObject([
-      //   'Bucket' => $this->__s3_bucket,
-      //   'Key' => $path,
-      // ]);
-
       exec('curl -X DELETE "https://'
       .$this->__s3_bucket.'.s3.'
       .$this->__s3_region.'.amazonaws.com/'
