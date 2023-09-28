@@ -16,6 +16,58 @@ limitations under the License.
 https://github.com/givanz/Vvvebjs
 */
 
+window.wizardDataOptions = [
+    {
+        value: "",
+        text: "Default"
+    },
+    {
+        value: "intro_desc",
+        text: "Hero Description",
+    },
+    {
+        value: "intro_headline",
+        text: "Hero Headline",
+    },
+    {
+        value: "intro_video_url",
+        text: "Hero Video URL",
+    },
+    {
+        value: "address1",
+        text: "Address 1"
+    },
+    {
+        value: "address2",
+        text: "Address 2"
+    },
+    {
+        value: "email",
+        text: "Email"
+    },
+    {
+        value: "country",
+        text: "Country"
+    },
+    {
+        value: "about_image",
+        text: "About Image"
+    },
+    {
+        value: "about_desc",
+        text: "About Description"
+    },
+    {
+        value: "help_image",
+        text: "Help Image"
+    },
+    // {
+    //     value: "intro_cta_button_link",
+    //     text: "Hero CTA Button Link"
+    // }
+
+];
+
 bgcolorClasses = ["bg-primary", "bg-secondary", "bg-success", "bg-danger", "bg-warning", "bg-info", "bg-body-secondary", "bg-dark", "bg-white"]
 
 bgcolorSelectOptions = 
@@ -96,6 +148,19 @@ Vvveb.Components.add("_base", {
         inline:false,
         col:6,
         inputtype: TextInput
+    },
+    // Added
+    {
+        name: "Wizard data",
+        key: "data-wizard",
+        htmlAttr: "data-wizard",
+        sort: base_sort++,
+        inline:false,
+        col:6,
+        inputtype: SelectInput,
+        data: {
+            options: wizardDataOptions,
+        }
     }
    ]
 });    

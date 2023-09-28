@@ -2,8 +2,8 @@
 
 require "barrel.php";
 
+
 $site = $_GET['site'] ?? 'test';
-//include 'editor.html';
 $html = file_get_contents('editor.html');
 
 $is_admin = $site == "template" || $site == "test";
@@ -14,8 +14,17 @@ $_site = file_get_contents("example.site");
 $_blank = file_get_contents("new-page-blank-template.html");
 
 if (!is_dir($site_dir)) {
-  // Run a condition to check if the Id is an actual wizard ID
-  // Make a CURL request
+  $client = new GuzzleHttp\Client(['base_uri' => getenv('API_BASE_URL')]);
+  $response = $client->get("/api/d/wizards/".$site);
+
+  $body = json_decode($response->getBody()->__toString() ?? '{}');
+
+  if (!isset($body->agency_wizard)) {
+    $_404 = file_get_contents('404.html');
+    echo $_404;
+    exit;
+  }
+
   // Use the response
   mkdir($site_dir, 0777, true);
   file_put_contents($site_dir .'/index.html', $_blank);

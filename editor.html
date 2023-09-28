@@ -14,6 +14,7 @@
     <link href="css/editor.css" rel="stylesheet">
 		<script type="text/javascript"> 
 		window.SITE="";
+		window.EDIT_MODE = true;
 		</script>
 		<style> 
 
@@ -52,7 +53,7 @@
 		</style>
   </head>
 <body>
-
+	<!-- <script type="text/javascript" src="https://useagencyai-bucket.s3.us-west-1.amazonaws.com/editor/assets/js/wizard.js"></script> -->
 	<div id="vvveb-builder" class="reset">
 				<div id="top-panel">
 					<!-- <img src="img/logo.png" alt="Vvveb" class="float-start" id="logo"> -->
@@ -651,6 +652,7 @@
 								<a id="save-reusable-btn" href="" title="Save as reusable" class="mx-2"><i class="icon-save-outline"></i></i></a>
 									<a id="clone-btn" href="" title="Clone element"><i class="icon-copy-outline"></i></a>
 									<a id="delete-btn" href="" title="Remove element"><i class="icon-trash-outline"></i></i></a>
+									<a id="view-btn" href="" title="View data"><i class="icon-eye-outline"></i></i></a>
 								</div>
 								
 								<div class="resize">
@@ -784,9 +786,21 @@
 							</div>
 						</div>
 							
+						
 														
-						<iframe src="" id="iframe1">
+						<iframe src="" id="iframe1" onload="onload">
 						</iframe>
+
+						<script>
+							var iframe = document.getElementById('iframe1');
+							function onload () {
+									var iframeWindow = iframe.contentWindow;
+									iframeWindow.SITE = window.SITE;
+									iframeWindow.EDIT_MODE = window.EDIT_MODE;
+									window.agencyDataHandler = iframeWindow.agencyDataHandler
+							}
+							iframe.addEventListener('load', onload)
+						</script>
 					</div>
 					
 					
@@ -1681,6 +1695,7 @@ Vvveb.themeBaseUrl = 'demo/landing/';
 <script src="libs/builder/sections-bootstrap4.js"></script>
 
 <!-- blocks-->
+<script src="libs/builder/blocks-wizard.js"></script>
 <script src="libs/builder/blocks-bootstrap4.js"></script>
 
 <!-- plugins -->

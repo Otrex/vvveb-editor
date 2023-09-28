@@ -1184,6 +1184,43 @@ Vvveb.Builder = {
 
 	},
 
+	viewData: function(node) {
+		if (!node) {
+			node = Vvveb.Builder.selectedEl.get(0);
+			dataWizard = node.getAttribute('data-wizard');
+
+			if (window.agencyDataHandler && dataWizard) {
+				const actualData = window.agencyDataHandler.extractDataUsingElement(node);
+				const placeholderDataImage = window.agencyDataHandler.getPlaceholderImage();
+				const placeholderData = "${" + (window.wizardDataOptions.find(e => e.value === dataWizard)?.text || dataWizard) + "}";
+
+				let togglers = {
+					img() {
+						if (node.getAttribute('src') === placeholderDataImage) {
+							node.setAttribute('src', actualData);
+						} else {
+							node.setAttribute('src', placeholderDataImage);
+						}
+					},
+					default() {
+						if (node.innerText !== actualData) {
+							node.innerText = actualData;
+						} else {
+							node.innerText = placeholderData;
+						}
+					}
+				}
+
+				// console.table('node', node.nodeName.toLowerCase());
+
+				if (togglers) {
+					let handler = togglers[node.nodeName.toLowerCase()] ? togglers[node.nodeName.toLowerCase()] : togglers['default'];
+					handler();
+				}
+			}
+		}
+	},
+
 	moveNodeDown:  function(node) {
 			if (!node) {
 				node = Vvveb.Builder.selectedEl.get(0);
@@ -1617,6 +1654,14 @@ Vvveb.Builder = {
 		$("#clone-btn").on("click", function(event) {
 			
 			Vvveb.Builder.cloneNode();
+			
+			event.preventDefault();
+			return false;
+		});
+
+		$("#view-btn").on("click", function(event) {
+			
+			Vvveb.Builder.viewData();
 			
 			event.preventDefault();
 			return false;
