@@ -31,6 +31,8 @@ $output = shell_exec($command);
 // Output the result or handle errors
 if ($output === null) {
     echo "Error executing the command.";
+    echo $output;
+    exit;
 } else {
     echo "Command output:\n" . $output;
 }
