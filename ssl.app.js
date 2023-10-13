@@ -98,8 +98,8 @@ const server = http.createServer((req, res) => {
           throw new Error("no domain provided");
         }
     
-        if (!configPath) {
-          throw new Error("no config path provided");
+        if (!folder) {
+          throw new Error("no folder provided");
         }
     
         await commands.reloadApache();

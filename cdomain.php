@@ -25,19 +25,41 @@ file_put_contents($configFile, $config);
 $logFile = __DIR__ . "/certbot_output.log";
 
 // $command = "curl http://127.0.0.1:3000/runcertbot?domain=".$domainName."&folder=".$folderName;
-$command = "curl http://127.0.0.1:3000/runcertbot?domain=$domainName&folder=$folderName";
-$output = shell_exec($command);
+// $command = "curl http://127.0.0.1:3000/runcertbot?domain=$domainName&folder=$folderName";
+// $output = shell_exec($command);
 
-// Output the result or handle errors
-if ($output === null) {
-    echo "Error executing the command.";
-    // unlink($configSSLFile);
-    echo $output;
+// // Output the result or handle errors
+// if ($output === null) {
+//     echo "Error executing the command.";
+//     // unlink($configSSLFile);
+//     echo $output;
+//     exit;
+// } else {
+//   // file_put_contents($configSSLFile, $configSSL);
+//     // echo "Command output:\n" . $output;
+// }
+
+$curl = curl_init();
+
+if ($curl === false) {
+    echo "cURL initialization failed.";
     exit;
-} else {
-  // file_put_contents($configSSLFile, $configSSL);
-    // echo "Command output:\n" . $output;
 }
+
+$url = "http://127.0.0.1:3000/runcertbot?domain=" . urlencode($domainName) . "&folder=" . urlencode($folderName);
+
+curl_setopt($curl, CURLOPT_URL, $url);
+curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+
+$response = curl_exec($curl);
+
+if ($response === false) {
+  echo "cURL request failed: " . curl_error($curl);
+} else {
+  echo "Response:\n" . $response;
+}
+
+curl_close($curl);
 
 header("HTTP/1.1 200 OK");
 echo "Configuration updated successfully.";
