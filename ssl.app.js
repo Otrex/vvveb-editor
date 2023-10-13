@@ -76,7 +76,7 @@ const commands = {
 
 const server = http.createServer((req, res) => {
   const ctx = context(req, res);
-  console.log(ctx);
+  console.log(req.url, ctx.url);
   ctx.getController({
     ["GET /runcertbot"]: async ({ res, url: data }) => {
       try {

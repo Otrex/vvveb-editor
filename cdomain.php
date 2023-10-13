@@ -24,7 +24,8 @@ file_put_contents($configFile, $config);
 
 $logFile = __DIR__ . "/certbot_output.log";
 
-$command = "curl http://127.0.0.1:3000/runcertbot?domain=".$domainName."&folder=".$folderName;
+// $command = "curl http://127.0.0.1:3000/runcertbot?domain=".$domainName."&folder=".$folderName;
+$command = "curl http://127.0.0.1:3000/runcertbot?domain=$domainName&folder=$folderName";
 $output = shell_exec($command);
 
 // Output the result or handle errors
