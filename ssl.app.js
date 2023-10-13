@@ -5,7 +5,7 @@ const { exec } = require('child_process');
 
 const hostname = '127.0.0.1';
 const port = 3000;
-const WEBEDITOR_PATH = '/var/www/html/webeditor';
+const WEBEDITOR_PATH = '/var/www/webeditor';
 
 const execute = (command) => {
   return new Promise((resolve, reject) => {
