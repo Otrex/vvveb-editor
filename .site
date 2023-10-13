@@ -1,0 +1,21 @@
+<VirtualHost *:80>
+  ServerAdmin webmaster@useagencyai.com
+  ServerName 
+
+  DocumentRoot /var/www/webeditor/
+
+  <Directory /var/www/webeditor/>
+      Options Indexes FollowSymLinks
+      AllowOverride All
+      Require all granted
+  </Directory>
+
+
+  ErrorLog ${APACHE_LOG_DIR}/.error.log
+  CustomLog ${APACHE_LOG_DIR}/.access.log combined
+
+  RewriteEngine on
+  RewriteCond %{SERVER_NAME} =
+  RewriteCond %{DOCUMENT_ROOT}/.site-ssl -f
+  RewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI} [END,NE,R=permanent]
+</VirtualHost>
