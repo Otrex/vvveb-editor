@@ -21,7 +21,7 @@ file_put_contents($configFile, $config);
 // file_put_contents($configSSLFile, $configSSL);
 
 // $command = "curl http://127.0.0.1:3000/runcertbot?domain=".$domainName."&folder=".$folderName;
-$command = "curl http://127.0.0.1:3000/runcertbot?domain=$domainName&folder=$folderName";
+$command = "curl http://127.0.0.1:3000/runcertbot?folder=$folderName&domain=$domainName";
 $output = shell_exec($command);
 
 // Output the result or handle errors
