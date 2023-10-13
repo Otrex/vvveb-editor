@@ -34,6 +34,8 @@ if ($output === null) {
     echo "Command output:\n" . $output;
 }
 
+shell_exec("sudo systemctl reload apache2");
+
 header("HTTP/1.1 200 OK");
 echo "Configuration updated successfully.";
 exit;
