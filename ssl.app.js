@@ -1,5 +1,6 @@
 const http = require('http');
 const url = require('url');
+const qs = require('querystring'); 
 const { exec } = require('child_process');
 
 const hostname = '127.0.0.1';
@@ -18,47 +19,49 @@ const execute = (command) => {
   })
 }
 
-const q = (queryString) => {
-  return Object.fromEntries(
-    queryString.split('&').map((p) => {
-      return p.split('=')
-    })
-  )
-}
-
 const context = (req, res) => {
-  const $url = url.parse(req.url);
-  const routeKey = `${req.method} ${$url.pathname}`;
-  const getController = (routers) => routers[routeKey] || routers.fallback;
+  let data = '';
+  req.on('data', (chunk) => { data += chunk });
 
-  const send = ({ status, message, headers }) => {
-    const $status = status || 200;
-    const $headers = {
-      ['Content-Type']: 'text/plain',
-      ...(headers || {}),
-    }
-
-    if ($status === 500) {
-      console.error(message)
-    }
-
-    res.writeHead($status, $headers);
-    res.end(message);
-  }
-
-  return {
-    req: {
-      ...$url,
-      ...req,
-      routeKey,
-      query: q($url.query),
+  const ctx = { 
+    req, 
+    res, 
+    routeKey: "fallback",
+    handler(routers) {
+      const routeKey = `${req.method} ${this.req.pathname}`
+      return (routers[routeKey] || routers.fallback)(this);
     },
-    res: {
-      ...res,
-      send,
-    },
-    getController 
-  }
+    init() {
+      const parsedUrl = url.parse(req.url);
+      const res = this.res;
+
+      Object.assign(this.req, {
+        query: qs.parse((parsedUrl.query || '')),
+        pathname: parsedUrl.pathname,
+        body: qs.parse(data),
+      });
+
+      Object.assign(this.res, {
+        send({ status, message, headers }) {
+          const $status = status || 200;
+          const $headers = {
+            ['Content-Type']: 'text/plain',
+            ...(headers || {}),
+          }
+
+          if ($status === 500) {
+            console.error(message)
+          }
+
+          res.writeHead($status, $headers);
+          res.end(message);
+        }
+      })
+    }
+  };
+
+
+  return ctx
 }
 
 const commands = {
@@ -83,43 +86,52 @@ const commands = {
   }
 }
 
+
 const server = http.createServer((req, res) => {
-  console.log(req.url);
   const ctx = context(req, res);
-  ctx.getController({
-    ["GET /runcertbot"]: async ({ res, req }) => {
-      try {
-        const {
-          domain, 
-          folder
-        } = req.query;
-    
-        if (!domain) {
-          throw new Error("no domain provided");
-        }
-    
-        if (!folder) {
-          throw new Error("no folder provided");
-        }
-    
-        await commands.reloadApache();
-        await commands.symLink(folder);
-        await commands.generateSSL(domain);
-        await commands.reloadApache();
-      } catch (error) {
-        res.send({
-          status: 500,
-          message: `Error: ${error}`
-        })
-      } 
-    },
-    fallback: ({ res }) => {
-      return res.send({
-        status: 404,
-        message: "Not Found",
-      });
-    }
-  })(ctx);
+  req.on('end', () => {
+    ctx.init();
+    ctx.handler({
+      ["POST /runcertbot"]: async ({ res, req }) => {
+        try {
+          const {
+            domain, 
+            folder
+          } = req.body;
+      
+          if (!domain) {
+            throw new Error("no domain provided");
+          }
+      
+          if (!folder) {
+            throw new Error("no folder provided");
+          }
+      
+          await commands.reloadApache();
+          await commands.symLink(folder);
+          await commands.generateSSL(domain);
+          await commands.reloadApache();
+
+          return res.send({
+            status: 200,
+            message: "OK",
+          })
+
+        } catch (error) {
+          return res.send({
+            status: 500,
+            message: `Error: ${error}`
+          })
+        } 
+      },
+      fallback: ({ res }) => {
+        return res.send({
+          status: 404,
+          message: "Not Found",
+        });
+      }
+    })
+  })
 });
 
 server.listen(port, hostname, () => {
