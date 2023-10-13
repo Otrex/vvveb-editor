@@ -8,6 +8,8 @@
     "letsencrypt",
     "newfile",
     "otrex",
+    "runcertbot",
+    "symlinkfs",
     "Vvveb",
     "webeditor"
   ]
