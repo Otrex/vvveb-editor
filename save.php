@@ -168,6 +168,7 @@ if (!is_dir($dir)) {
 	}
 }
 
+header("HTTP/1.1 200 OK");
 if (file_put_contents($file, $html)) {
 	echo "File saved '$file'";
 } else {

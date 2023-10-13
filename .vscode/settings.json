@@ -1,9 +1,14 @@
 {
   "cSpell.words": [
+    "certbot",
+    "certonly",
     "Comodojo",
+    "Cond",
     "Httprequest",
+    "letsencrypt",
     "newfile",
     "otrex",
-    "Vvveb"
+    "Vvveb",
+    "webeditor"
   ]
 }

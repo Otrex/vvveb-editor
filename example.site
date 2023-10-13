@@ -1,4 +1,21 @@
-RewriteEngine On
-RewriteCond %{REQUEST_URI} !^/site-template/
-RewriteCond %{HTTP_HOST} ^mmm.otrex.space$ [NC]
-RewriteRule ^(.*)$ /site-template/$1 [L]
+<VirtualHost *:80>
+  ServerAdmin webmaster@useagencyai.com
+  ServerName domain.space
+
+  DocumentRoot /var/www/webeditor/site.folder
+
+  <Directory /var/www/webeditor/site.folder>
+      Options Indexes FollowSymLinks
+      AllowOverride All
+      Require all granted
+  </Directory>
+
+
+  ErrorLog ${APACHE_LOG_DIR}/domain.space.error.log
+  CustomLog ${APACHE_LOG_DIR}/domain.space.access.log combined
+
+  RewriteEngine on
+  RewriteCond %{SERVER_NAME} =domain.space
+  RewriteCond %{DOCUMENT_ROOT}/.site-ssl -f
+  RewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI} [END,NE,R=permanent]
+</VirtualHost>

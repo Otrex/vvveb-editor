@@ -1,6 +1,7 @@
 <?php
 require 'vendor/autoload.php';
 define('S3_BASE_PATH', "editor");
+header("Access-Control-Allow-Origin: *");
 
 use Dotenv\Dotenv;
 

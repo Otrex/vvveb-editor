@@ -8,12 +8,31 @@ $domainName = $_GET['dn']; // Replace with the actual domain name
 
 // Read the existing configuration file
 $configFile = __DIR__ . "/$folderName/.site"; // Replace with the actual path to your config file
-$config = file_get_contents('example.site');
+$configSSLFile = __DIR__ . "/$folderName/.site-ssl"; // Replace with the actual path to your config file
 
-$config = str_replace("site-template", $folderName, $config);
-$config = str_replace("mmm.otrex.space", $domainName, $config);
+$config = file_get_contents('example.site');
+$configSSL = file_get_contents('example.site');
+
+$config = str_replace("folder.site", $folderName, $config);
+$config = str_replace("domain.space", $domainName, $config);
+
+$configSSL = str_replace("folder.site", $folderName, $configSSL);
+$configSSL = str_replace("domain.space", $domainName, $configSSL);
 
 file_put_contents($configFile, $config);
+file_put_contents($configSSLFile, $configSSL);
+
+$email = "obisiket@gmail.com";
+$command = "sudo certbot certonly --apache -d $domainName --non-interactive --agree-tos --email $email";
+
+$output = shell_exec($command);
+
+// Output the result or handle errors
+if ($output === null) {
+    echo "Error executing the command.";
+} else {
+    echo "Command output:\n" . $output;
+}
 
 header("HTTP/1.1 200 OK");
 echo "Configuration updated successfully.";
