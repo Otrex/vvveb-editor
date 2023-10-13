@@ -18,6 +18,14 @@ const execute = (command) => {
   })
 }
 
+const q = (queryString) => {
+  return Object.fromEntries(
+    queryString.split('&').map((p) => {
+      return p.split('=')
+    })
+  )
+}
+
 const context = (req, res) => {
   const $url = url.parse(req.url);
   const routeKey = `${req.method} ${$url.pathname}`;
@@ -39,10 +47,11 @@ const context = (req, res) => {
   }
 
   return {
-    req,
-    url: {
+    req: {
       ...$url,
+      ...req,
       routeKey,
+      query: q($url.query),
     },
     res: {
       ...res,
@@ -78,12 +87,12 @@ const server = http.createServer((req, res) => {
   const ctx = context(req, res);
   console.log(req.url, ctx.url);
   ctx.getController({
-    ["GET /runcertbot"]: async ({ res, url: data }) => {
+    ["GET /runcertbot"]: async ({ res, req }) => {
       try {
         const {
           domain, 
           folder
-        } = data.query;
+        } = req.query;
     
         if (!domain) {
           throw new Error("no domain provided");
