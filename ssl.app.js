@@ -20,7 +20,7 @@ const execute = (command) => {
 
 const context = (req, res) => {
   const $url = url.parse(req.url);
-  const routeKey = `${req.method} ${$url.path}`;
+  const routeKey = `${req.method} ${$url.pathname}`;
   const getController = (routers) => routers[routeKey] || routers.fallback;
 
   const send = ({ status, message, headers }) => {
