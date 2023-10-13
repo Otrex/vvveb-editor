@@ -23,24 +23,20 @@ file_put_contents($configFile, $config);
 file_put_contents($configSSLFile, $configSSL);
 
 $logFile = __DIR__ . "/certbot_output.log";
-$email = "obisiket@gmail.com";
-$command = "sudo /usr/bin/certbot certonly --apache -d $domainName --non-interactive --agree-tos --email $email > $logFile 2>&1";
 
+$command = "http://127.0.0.1:3000/runcertbot?domain=".$domainName;
 $output = shell_exec($command);
 
 // Output the result or handle errors
 if ($output === null) {
     echo "Error executing the command.";
-    unlink($configFile);
     unlink($configSSLFile);
-    
     echo $output;
     exit;
 } else {
-    echo "Command output:\n" . $output;
+  file_put_contents($configSSLFile, $configSSL);
+    // echo "Command output:\n" . $output;
 }
-
-shell_exec("sudo systemctl reload apache2");
 
 header("HTTP/1.1 200 OK");
 echo "Configuration updated successfully.";
