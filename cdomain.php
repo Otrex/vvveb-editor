@@ -1,7 +1,5 @@
 <?php
-
-
-header("Access-Control-Allow-Origin: *");
+require "barrel.php";
 // Define the folder name and domain name
 $folderName = $_GET['fn']; // Replace with the actual folder name
 $domainName = $_GET['dn']; // Replace with the actual domain name
@@ -24,42 +22,26 @@ file_put_contents($configFile, $config);
 
 $logFile = __DIR__ . "/certbot_output.log";
 
+$command = "curl http://127.0.0.1:3000/runcertbot?domain=$domainName&folder=$folderName";
+
+$client = new \GuzzleHttp\Client();
+$response = $client->request('GET', $command);
+
 // $command = "curl http://127.0.0.1:3000/runcertbot?domain=".$domainName."&folder=".$folderName;
-// $command = "curl http://127.0.0.1:3000/runcertbot?domain=$domainName&folder=$folderName";
-// $output = shell_exec($command);
 
-// // Output the result or handle errors
-// if ($output === null) {
-//     echo "Error executing the command.";
-//     // unlink($configSSLFile);
-//     echo $output;
-//     exit;
-// } else {
-//   // file_put_contents($configSSLFile, $configSSL);
-//     // echo "Command output:\n" . $output;
-// }
+$output = $response->getStatusCode();
 
-$curl = curl_init();
-
-if ($curl === false) {
-    echo "cURL initialization failed.";
+// Output the result or handle errors
+if ($output === 500) {
+    echo "Error executing the command.";
+    // unlink($configSSLFile);
+    echo $output;
     exit;
-}
-
-$url = "http://127.0.0.1:3000/runcertbot?domain=" . urlencode($domainName) . "&folder=" . urlencode($folderName);
-
-curl_setopt($curl, CURLOPT_URL, $url);
-curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-
-$response = curl_exec($curl);
-
-if ($response === false) {
-  echo "cURL request failed: " . curl_error($curl);
 } else {
-  echo "Response:\n" . $response;
+  // file_put_contents($configSSLFile, $configSSL);
+    // echo "Command output:\n" . $output;
 }
 
-curl_close($curl);
 
 header("HTTP/1.1 200 OK");
 echo "Configuration updated successfully.";
