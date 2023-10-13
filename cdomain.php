@@ -20,19 +20,12 @@ $config = str_replace("domain.space", $domainName, $config);
 file_put_contents($configFile, $config);
 // file_put_contents($configSSLFile, $configSSL);
 
-$logFile = __DIR__ . "/certbot_output.log";
-
-$command = "curl http://127.0.0.1:3000/runcertbot?domain=$domainName&folder=$folderName";
-
-$client = new \GuzzleHttp\Client();
-$response = $client->request('GET', $command);
-
 // $command = "curl http://127.0.0.1:3000/runcertbot?domain=".$domainName."&folder=".$folderName;
-
-$output = $response->getStatusCode();
+$command = "curl http://127.0.0.1:3000/runcertbot?domain=$domainName&folder=$folderName";
+$output = shell_exec($command);
 
 // Output the result or handle errors
-if ($output === 500) {
+if ($output === null) {
     echo "Error executing the command.";
     // unlink($configSSLFile);
     echo $output;
