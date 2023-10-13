@@ -60,7 +60,7 @@ const commands = {
     if (!folder) {
       throw new Error("no file path or destination path provided.");
     }
-    return execute(`sudo ln -s ${WEBEDITOR_PATH}/${folder}/.site /etc/apache2/sites-enabled/${folder}.conf`);
+    return execute(`sudo ln -s ${WEBEDITOR_PATH}/${folder}/${folder}.conf /etc/apache2/sites-enabled/${folder}.conf`);
   },
   async generateSSL(domain, email="obisiket@gmail.com") {
     if (!domain) {
