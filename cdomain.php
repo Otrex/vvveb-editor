@@ -19,22 +19,9 @@ $config = str_replace("domain.space", $domainName, $config);
 
 file_put_contents($configFile, $config);
 // file_put_contents($configSSLFile, $configSSL);
-
-// $command = "curl http://127.0.0.1:3000/runcertbot?domain=".$domainName."&folder=".$folderName;
+//TODO Handle failure to create custom domain configuration
 $command = "curl -X POST -d 'folder=$folderName&domain=$domainName' http://127.0.0.1:3000/runcertbot";
 $output = shell_exec($command);
-
-// Output the result or handle errors
-if ($output === null) {
-    echo "Error executing the command.";
-    // unlink($configSSLFile);
-    echo $output;
-    exit;
-} else {
-  // file_put_contents($configSSLFile, $configSSL);
-    // echo "Command output:\n" . $output;
-}
-
 
 header("HTTP/1.1 200 OK");
 echo "Configuration updated successfully.";
