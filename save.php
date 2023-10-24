@@ -34,6 +34,7 @@ $_site = file_get_contents("example.site");
 if (isset($_POST['startTemplateUrl']) && !empty($_POST['startTemplateUrl'])) {
 	$startTemplateUrl = sanitizeFileName($_POST['startTemplateUrl']);
 	$html = file_get_contents($startTemplateUrl);
+	echo isset($_POST['startTemplateUrl']).'-hmm-'.!empty($_POST['startTemplateUrl']);
 } else if (isset($_POST['html'])){
 	$html = substr($_POST['html'], 0, MAX_FILE_LIMIT);
 }
