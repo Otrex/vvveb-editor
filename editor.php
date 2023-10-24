@@ -1,5 +1,7 @@
 <?php
 
+use GrahamCampbell\ResultType\Success;
+
 require "barrel.php";
 
 
@@ -26,9 +28,13 @@ if (!is_dir($site_dir)) {
   }
 
   // Use the response
-  mkdir($site_dir, 0777, true);
-  file_put_contents($site_dir .'/index.html', $_blank);
-  file_put_contents($site_dir .'/.site', $_site);
+
+  $success = mkdir($site_dir, 0777, true);
+  if (!$success) {
+    throw new Exception("failed to create directory: ".$site_dir);
+  }
+  file_put_contents($site_dir.'/index.html', $_blank);
+  file_put_contents($site_dir.'/.site', $_site);
 }
 
 //search for html files in demo and my-pages folders
