@@ -171,7 +171,7 @@ if (!is_dir($dir)) {
 
 header("HTTP/1.1 200 OK");
 if (file_put_contents($file, $html)) {
-	echo "File saved '$file'";
+	echo "File saved '$file', \n '$html'";
 } else {
 	showError("Error saving file '$file'\nPossible causes are missing write permission or incorrect file path!");
 }	
