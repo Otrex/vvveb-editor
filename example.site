@@ -3,6 +3,7 @@
   ServerName domain.space
 
   DocumentRoot /var/www/webeditor/site.folder
+  DirectoryIndex index.html
 
   <Directory /var/www/webeditor/site.folder>
       Options Indexes FollowSymLinks
